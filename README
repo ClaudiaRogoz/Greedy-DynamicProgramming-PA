@@ -1,0 +1,51 @@
+/**
+*Rogoz Claudia 321 CA
+*Tema 1 Proiectarea Algoritmilor
+*
+*Problema1: Sauron
+*Problema2: TheMatrix
+*
+**/
+
+
+Problema1
+
+**Detalii de implementare**
+	Problema 1 am implementat-o aplicand algoritmul Greedy. Pentru aceasta am construit clasa Sauron cu urmatoare campuri, respectiv metode:
+	*campuri folosite:
+	--N2 numarul de perechi initiale
+	--masterKill, slaveKill vectorii corespunzatori numarului de victime ale stapanilor, respectiv ale sclavilor
+	--idxMasterSol, idxSlaveSol vectorii care vor construi solutia finala
+	contin indecsii percehilor stapan-sclav noi construite
+	
+	*metode folosite:
+	--computeWage metoda recursiva pe coada. Aceasta metoda calculeaza atat suma minima obtinuta prin algoritmul Greedy parcurgand recursiv noile perechi construite. Totodata m-am folosit de aceasta metoda pentru afisarea perechilor. Aceasta metoda este optimizata prin procedeul tail call optimisation (cu ajutorul g++).Datele sunt scrise in fisierul "date.out"
+	-- readFile metoda care citeste datele de intrare si le scrie in campurile corespunzatoare din Sauron; datele sunt citite din fisierul "date.in"
+	--computeGreedySolution metoda care construieste pe baza algoritmul Greedy solutia finala. Algoritmul aplicat este dupa acum urmeaza: Se iau rand pe rand 2 perechi consecutive stapan-sclav. Intrucat, prima pereche aleasa poate construi o pereche noua valida doar prin intermediul sclavului (fiindca indexul sclavului < indexul stapanului => nu exista nicio pereche in care indexul sclavului sa fie < indexul primului stapan = 0), se vor initializa cei 2 vectori cu valorile sclav[0], respectiv stapan[1].
+	Se itereaza apoi din 2 in 2 (ca si cum am alege cate 2 perechi consecutive odata).
+	In acest moment trebuie sa verificam daca se respecta conditia de minimizare a sumei. pentru aceasta se verifica cine trebuie ales (sclavul sau stapanul din perechea curenta) pentru adaugarea la solutia partiala. Asadar se itereaza printre toti indecsii de stapani pusi in solutia partiala. In acest moment se observa care ar fi diferenta intre suma dintre sclavul de la pozitia curenta si masterul din idxMasterSol, suma dintre stapanul de la pozitia curenta si sclavul corespunzator lui idxMasterSol. Pentru minimizarea sumei, ar trebui ca diferenta sa fi e cat mai mare. Astfel, pastrez intr-o variabila "diff" maximul diferentelor intalnite in cadrul iteratiei. In cazul in care diff se updateaza, se fac schimbarile necesare pentru minimizare. Daca nu s-a detectat nicio nerespectare a conditiei de minimizare, sclavul curent este adaugat la solutia partiala.   
+	Totodata, m-am folosit de vectorul hashtable care reprezinta o mapare intre fiecare master si pozitia asociata acestuia in cadrul solutiei partiale. Valoarea asociata -1 al unui stapan reprezinta neapartenta acestuia in cadrul multimii de stapani noi formati. Acest hashtable asigura O(1) pentru aflarea pozitiei unui master in cadrul lui idxMasterSol.
+	
+Problema 2
+
+**Detalii de implementare**
+    Problema 2 am inplementat-o aplicand programarea dinamica. Pentru aceasta, am observat ca este suficient sa aflu numarul de combinatii posibile (cu restrictiile cerute) pentru N linii si 1 coloana (iar k-ul ramane identic). Rezultatul obtinut in urma acestei particularizari se va ridica la numarul de coloane dorite M.
+    Pentru implementare m-am folosit de clasa TheMatrix cu urmatoarele campuri, respectiv metode:
+    *campuri folosite:
+    --N, M, k datele citite din fisier: numarul de linii, numarul de coloane, respectiv numarul maxim de 1 pe o coloana
+    --sum numarulde posibilitati pentru solutia particularizata cu N linii si 1 coloana
+    --matrix matrice prin intermediul careia se construieste solutia particularizata. 
+    matricea matrix este de dimensiune (k+1)*(k+1), pot exista k+1 stari de 1 (de la 0 pana la k). Am observat ca apare o recurenta de forma F(i) = F(i-1) + F(i-2) + ... + F(i-(k+1)), in sensul ca numarul de combinatii posibile pentru un N oarecare = i depinde de anteriorii (k+1) termeni. de exemplu pentru k = 2 recurenta devine: F(0) = 2; F(2) = 4; F(3) = 7;
+pentru i = 5 : F(5) = F(4) + F(3) + F(2)= (2+ 4 + 7) + 7 + 4 = 24; Aceasta serie obtinuta de forma 2 4 7 13 24 .... este seria tribonacci cu matricea corespunzatoare de forma: {{1, 1, 0} {1, 0, 1}, {1, 0, 0}}. Generalizand acest caz pentru o matrice (k+1) * (k+1), matricea obtinuta este de forma: prima coloana contine 1,de asemenea deasupra diagonalei principale apar tot 1, in rest matricea e umpluta cu 0-ouri. Pentru aflarea numarului de combinatii pentru N linii matricea se ridica la
+puterea N, iar suma numerelor de pe prima linie vor reprezenta rezultatul. Pentru generalizarea problemei pentru M coloane, suma rezulata va fi ridicata la puterea M. ( fiecare combinatie din sum se poate imperechea cu fiecare combinatie sum pentru restul de coloane)
+    *metode folosite
+    --readFile se citesc datele de la intrare din fisierul "date.in"
+    --expBySquaring metoda care realizeaza ridicarea unui numar a la puterea p. Acest algoritm este recursiv cu complexitate de O (logn). Formula folosita este urmatoarea:   
+x^n = (x^2) ^(n/2)          pentru n =par
+    = x*(x^2)^((n-1)/2)     pentru n = impar
+    --expBySquaringMatrix metoda care realizeaza ridicarea unei matrici a la puterea n. Analog expBySquaring; se foloseste de metoda multiply
+    --multiply metoda care inmulteste efectiv 2 matrici, complexitatea este de O((k+1)^3)
+    --dynamicProgramming metoda care apeleaza celalte metode necesare calcularii rezultatului final. Rezultatul final este scris in fisierul "date.out"
+
+
+
